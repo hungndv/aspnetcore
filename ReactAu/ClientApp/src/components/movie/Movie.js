@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Button, Form, FormGroup, Input, Spinner, Table, UncontrolledAlert } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label, Spinner, Table, UncontrolledAlert } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import { initialState, setQueryParams, useGetMoviesQuery } from './movieSlice'
 import MovieModal from './MovieModal'
@@ -11,11 +11,11 @@ import ReactPaginate from 'react-paginate';
 
 export function Movie() {
   const queryParams = useSelector(state => state.movie.queryParams);
-  const { searchString, pageIndex, sortOrder } = queryParams;
+  const { searchString, pageIndex, sortOrder, pageSize } = queryParams;
   const { successMsg } = useSelector(state => state.movie);
   const dispatch = useDispatch();
 
-  const { data, isLoading, isFetching, isSuccess, isError, error } = useGetMoviesQuery(queryParams);
+  const { data, refetch, isLoading, isFetching, isSuccess, isError, error } = useGetMoviesQuery(queryParams);
 
   const emptyMovie = useSelector(getEmptyMovie);
 
@@ -54,7 +54,7 @@ export function Movie() {
         breakLabel={'...'}
         containerClassName={'pagination'}
         disabledClassName={'disabled'}
-        forcePage={pageIndex - 1}
+        forcePage={data.pageIndex - 1}
         hrefBuilder={e => '#'}
         marginPagesDisplayed={2}
         nextLabel={'next'}
@@ -99,6 +99,24 @@ export function Movie() {
     dispatch(setQueryParams({ ...queryParams, sortOrder: `${key}_${sort}` }));
   };
 
+  const handleOnConfirmModalExit = () => {
+
+  };
+
+  const pageSizeComp = (
+    <FormGroup className="form-inline">
+      <Label for="pageSize">Size</Label>&nbsp;
+      <Input type="select"
+        name="pageSize" id="pageSize"
+        value={pageSize}
+        onChange={e => dispatch(setQueryParams({ ...initialState.queryParams, searchString: searchString, pageSize: e.target.value }))}>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+      </Input>
+    </FormGroup>
+  );
+
   return (
     <div>
       <div className="container-fluid">
@@ -136,9 +154,19 @@ export function Movie() {
                 {tbody}
               </tbody>
             </Table>
-            {pager}
             <MovieModal queryParams={queryParams} />
-            <ConfirmModal />
+            <ConfirmModal onExit={handleOnConfirmModalExit} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-3 d-flex align-items-center">
+            <span>{data && data.items ? `Showing ${(pageIndex - 1) * pageSize + 1} to ${(pageIndex - 1) * pageSize + data.items.length} of ${data.totalCount} entries` : ''}</span>
+          </div>
+          <div className="col-6 d-flex justify-content-center align-items-center">
+            {pager}
+          </div>
+          <div className="col-3 form-row d-flex justify-content-right align-items-center">
+            {pageSizeComp}
           </div>
         </div>
       </div>

@@ -6,7 +6,8 @@ export const initialState = {
   queryParams: {
     searchString: '',
     pageIndex: 1,
-    sortOrder: 'title_asc'
+    sortOrder: 'title_asc',
+    pageSize: 5,
   }
 };
 
@@ -34,7 +35,7 @@ export const movieApi = createApi({
   tagTypes: ['movie'],
   endpoints: builder => ({
     getMovies: builder.query({
-      query: ({ searchString, pageIndex, sortOrder }) => `api/movies/get?searchString=${searchString}&pageIndex=${pageIndex}&sortOrder=${sortOrder}`,
+      query: ({ searchString, pageIndex, sortOrder, pageSize }) => `api/movies/get?searchString=${searchString}&pageIndex=${pageIndex}&sortOrder=${sortOrder}&pageSize=${pageSize}`,
       providesTags: ['movie']
       //transformResponse:
     }),
@@ -98,8 +99,8 @@ export const movieApi = createApi({
       //  let patchResult;
       //  try {
       //    await queryFulfilled;
-      //    patchResult = dispatch(movieApi.util.updateQueryData('getMovies', undefined, draft => {
-      //      let idx = draft.findIndex(m => m.id === movie.id);
+      //    patchResult = dispatch(movieApi.util.updateQueryData('getMovies', getState().movie.queryParams, draft => {
+      //      let idx = draft.items.findIndex(m => m.id === movie.id);
       //      draft.splice(idx, 1);
       //    }));
       //  } catch {

@@ -27,17 +27,11 @@ namespace ReactAu.Controllers
         // GET: Movies
         [HttpGet]
         [Route("get")]
-        public async Task<ActionResult<PaginatedList<Movie>>> Get(string searchString = "", int? pageIndex = 1, string sortOrder = "title_asc")
+        public async Task<ActionResult<PaginatedList<Movie>>> Get(string searchString = "", int? pageIndex = 1, string sortOrder = "title_asc", int? pageSize = 5)
         {
-            //ViewBag.CurrentSort = sortOrder;
-            //ViewBag.TitleSortParm = sortOrder == "title_asc" ? "title_desc" : "title_asc";
-            //ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
             Task.Delay(2000).Wait();
 
             pageIndex = pageIndex.HasValue ? pageIndex.Value : 1;
-            //searchString = searchString != null ? searchString : currentFilter;
-
-            //ViewBag.CurrentFilter = searchString;
 
             var movies = from m in _context.Movie
                            select m;
@@ -77,8 +71,7 @@ namespace ReactAu.Controllers
                     break;
             }
 
-            int pageSize = 1;
-            return Ok(await PaginatedList<Movie>.CreateAsync(movies.AsNoTracking(), pageIndex ?? 1, pageSize));
+            return Ok(await PaginatedList<Movie>.CreateAsync(movies.AsNoTracking(), pageIndex ?? 1, pageSize.Value));
         }
 
         // POST: Movies/Create

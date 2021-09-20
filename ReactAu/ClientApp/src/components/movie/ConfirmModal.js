@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmDelete } from './confirmModalSlice';
-import { useDeleteMovieMutation } from './movieSlice';
+import { useDeleteMovieMutation, useGetMoviesQuery } from './movieSlice';
 import { initialState, setQueryParams, setSuccessMsg } from './movieSlice'
 
 const ConfirmModal = () => {
@@ -29,7 +29,6 @@ const ConfirmModal = () => {
     if (!result.error) {
       dispatch(setSuccessMsg(`Delete movie '${movie.title}' successfully.`));
       handleOnCancelClick();
-      dispatch(setQueryParams({ ...initialState.queryParams, searchString: '' }));
       return;
     }
 

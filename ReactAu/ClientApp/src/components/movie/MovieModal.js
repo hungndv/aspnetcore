@@ -41,7 +41,6 @@ const MovieModal = (props) => {
       if (result.data) {
         dispatch(setSuccessMsg(`Add movie '${movie.title}' successfully.`));
         handleOnCancelClick();
-        dispatch(setQueryParams({ ...initialState.queryParams, searchString: '' }));
         return;
       }
 
